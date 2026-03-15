@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAKRIYA.com</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+            padding-top: 150px;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .search-form {
+            max-width: 600px;
+            margin: auto;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4285F4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background-color: #357AE8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to My Search Engine</h1>
+        <form class="search-form" action="https://www.google.com/search" method="GET" target="_blank">
+            <input type="text" name="q" class="search-input" placeholder="Search Google">
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+</body>
+</html>
