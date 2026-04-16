@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhammad Rehan | C Developer & Cybersecurity Enthusiast</title>
+    <meta name="description" content="Portfolio of Muhammad Rehan - Specialized in C Development, Cybersecurity, and Modern Web.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"DM Sans"', 'sans-serif'],
+                        heading: ['Syne', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        clay: {
+                            bg: '#0D0D1A',
+                            lavender: '#C9B8FF',
+                            coral: '#FFAB91',
+                            mint: '#A7F3D0',
+                            yellow: '#FEF08A',
+                            blue: '#BAE6FD',
+                            white: '#F1F0FF',
+                            muted: '#9D9DBF',
+                            accent: '#7C3AED',
+                        }
+                    },
+                    boxShadow: {
+                        clay: '0 10px 0px rgba(0,0,0,0.25), 0 20px 40px rgba(0,0,0,0.35), inset 0 2px 6px rgba(255,255,255,0.25)',
+                        'clay-hover': '0 18px 0px rgba(0,0,0,0.25), 0 30px 50px rgba(0,0,0,0.4), inset 0 2px 6px rgba(255,255,255,0.3)',
+                    },
+                    animation: {
+                        'blob-float': 'blob-float 12s infinite alternate ease-in-out',
+                        'morph': 'morph 8s infinite ease-in-out',
+                        'float': 'float 3s infinite ease-in-out',
+                        'icon-bounce': 'icon-bounce 3s infinite ease-in-out',
+                        'popup': 'popup 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                    },
+                    keyframes: {
+                        'blob-float': {
+                            '0%': { transform: 'translate(0, 0) scale(1)' },
+                            '33%': { transform: 'translate(100px, 50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-50px, 100px) scale(0.9)' },
+                            '100%': { transform: 'translate(0, 0) scale(1)' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'morph': {
+                            '0%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                            '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
+                            '100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                        },
+                        'icon-bounce': {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-5px) rotate(5deg)' },
+                        },
+                        'popup': {
+                            '0%': { transform: 'scale(0.8) translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'scale(1) translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-clay-bg text-clay-white font-sans selection:bg-clay-accent selection:text-white overflow-x-hidden;
+                cursor: none;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+        @layer components {
+            .clay-card {
+                @apply rounded-[28px] shadow-clay transition-all duration-300 relative;
+                will-change: transform, box-shadow;
+            }
+            .clay-card:hover {
+                @apply -translate-y-2 shadow-clay-hover;
+            }
+            .clay-pill {
+                @apply rounded-full shadow-[0_4px_0px_rgba(0,0,0,0.2),inset_0_1px_3px_rgba(255,255,255,0.3)];
+            }
+            .glass-clay {
+                @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(124,58,237,0.15)];
+            }
+            .scroll-reveal {
+                @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+            }
+            .reveal-active {
+                @apply opacity-100 translate-y-0;
+            }
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px; height: 8px; background: white;
+            position: fixed; top: 0; left: 0; border-radius: 50%;
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+            will-change: left, top;
+        }
+        .cursor-blob {
+            width: 40px; height: 40px; background: #7C3AED;
+            opacity: 0.3; position: fixed; top: 0; left: 0; border-radius: 50%;
+            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.3s;
+            will-change: left, top, width, height;
+        }
+        
+        .cursor-hover .cursor-blob {
+            width: 80px; height: 80px; background-color: #A7F3D0; opacity: 0.5;
+        }
+
+        /* Bg Blobs */
+        .bg-blob {
+            position: fixed; width: 400px; height: 400px; filter: blur(60px);
+            border-radius: 50%; z-index: -1; opacity: 0.1;
+            will-change: transform;
+        }
+
+        /* Journey Timeline Styles */
+        .timeline-container {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            @apply bg-white/10;
+        }
+        .timeline-item {
+            @apply mb-12 relative opacity-0 translate-x-4 transition-all duration-700;
+        }
+        .timeline-item.active {
+            @apply opacity-100 translate-x-0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -2.35rem; top: 0.5rem;
+            width: 12px; height: 12px;
+            @apply clay-pill bg-clay-accent border-2 border-clay-bg;
+        }
+
+        /* Skill Icon Animation */
+        .skill-icon-animate {
+            @apply animate-icon-bounce;
+        }
+        
+        @media (max-width: 768px) {
+            .clay-card:hover { transform: none !important; }
+            .bg-blob { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-blob" id="cursorBlob"></div>
+
+    <!-- Background Blobs -->
+    <div class="bg-blob animate-blob-float bg-clay-accent" style="top: 10%; left: 5%;"></div>
+    <div class="bg-blob animate-blob-float bg-clay-coral" style="bottom: 15%; right: 10%; animation-delay: -3s;"></div>
+    <div class="bg-blob animate-blob-float bg-clay-mint" style="top: 40%; right: 20%; animation-delay: -6s;"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-2xl">
+        <div class="glass-clay clay-pill px-8 py-4 flex items-center justify-between transition-all duration-500 hover:scale-[1.02]">
+            <a href="#" class="font-heading font-black text-2xl text-clay-white tracking-tighter">REHAN.</a>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about" class="text-sm font-bold text-clay-muted hover:text-clay-lavender transition-colors">About</a>
+                <a href="#skills" class="text-sm font-bold text-clay-muted hover:text-clay-lavender transition-colors">Skills</a>
+                <a href="#projects" class="text-sm font-bold text-clay-muted hover:text-clay-lavender transition-colors">Projects</a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <!-- Socials in Navbar -->
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/rehan789567" target="_blank" class="text-clay-muted hover:text-white transition-colors hover:scale-110">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/muhammad-rehan-600640393/" target="_blank" class="text-clay-muted hover:text-white transition-colors hover:scale-110">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <a href="#contact" class="px-6 py-2 bg-clay-coral clay-pill text-clay-bg font-bold text-sm tracking-wide">Hire Me</a>
+            </div>
+
+            <button class="md:hidden text-clay-white" id="mobileMenuBtn">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="min-h-screen flex items-center justify-center px-6 pt-20 relative">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="flex flex-col gap-6 text-center lg:text-left scroll-reveal">
+                <div class="clay-pill bg-clay-lavender px-6 py-2 w-fit mx-auto lg:mx-0 text-clay-bg font-bold text-sm tracking-widest uppercase">
+                    MUHAMMAD REHAN
+                </div>
+                <h1 class="text-6xl md:text-8xl font-heading font-black leading-[0.9] text-white">
+                    <span id="typewriter"></span><br>
+                    <span class="text-clay-coral">Developer.</span>
+                </h1>
+                <p class="text-xl text-clay-muted leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    Crafting efficient solutions in <span class="text-clay-mint font-bold italic">C</span>, exploring the depths of <span class="text-clay-yellow font-bold italic">Cybersecurity</span>, and building modern <span class="text-clay-blue font-bold italic">Web Apps</span>.
+                </p>
+                
+                <!-- Restored Social Icons with Perfection -->
+                <div class="flex flex-wrap gap-4 justify-center lg:justify-start mt-4">
+                    <a href="https://github.com/rehan789567" target="_blank" class="w-14 h-14 glass-clay clay-card flex items-center justify-center hover:bg-clay-accent hover:text-white transition-all hover:scale-110 active:scale-95 group">
+                        <i data-lucide="github" class="w-6 h-6 group-hover:animate-pulse"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/muhammad-rehan-600640393/" target="_blank" class="w-14 h-14 glass-clay clay-card flex items-center justify-center hover:bg-clay-accent hover:text-white transition-all hover:scale-110 active:scale-95 group">
+                        <i data-lucide="linkedin" class="w-6 h-6 group-hover:animate-pulse"></i>
+                    </a>
+                    <a href="mailto:muhammadrehan82008@gmail.com" class="w-14 h-14 glass-clay clay-card flex items-center justify-center hover:bg-clay-accent hover:text-white transition-all hover:scale-110 active:scale-95 group">
+                        <i data-lucide="mail" class="w-6 h-6 group-hover:animate-pulse"></i>
+                    </a>
+                </div>
+
+                <div class="mt-4 flex justify-center lg:justify-start">
+                    <a href="#projects" class="px-10 py-5 bg-clay-accent clay-card text-white font-bold text-lg tracking-wide hover:scale-105 active:scale-95 transition-all">
+                        Explore My Work
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative flex justify-center items-center scroll-reveal" style="transition-delay: 200ms;">
+                <div class="relative w-72 h-80 md:w-96 md:h-[480px] z-10">
+                    <div class="absolute inset-0 bg-clay-coral animate-morph opacity-40 blur-2xl scale-110"></div>
+                    <div class="absolute inset-0 bg-clay-mint animate-morph [animation-delay:-4s] opacity-40 blur-2xl scale-110"></div>
+                    <div class="w-full h-full bg-clay-lavender animate-morph overflow-hidden shadow-clay border-4 border-white/30 relative">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop" alt="Coding" class="w-full h-full object-cover scale-110" loading="eager">
+                        <div class="absolute inset-0 bg-gradient-to-t from-clay-lavender/40 to-transparent pointer-events-none"></div>
+                    </div>
+                </div>
+
+                <div class="absolute -top-4 -left-4 md:-left-12 px-4 py-2 bg-clay-yellow clay-card text-clay-bg font-bold text-xs md:text-sm rotate-[-6deg] z-20 animate-float">⚡ C Developer</div>
+                <div class="absolute top-1/2 -right-4 md:-right-12 px-4 py-2 bg-clay-lavender clay-card text-clay-bg font-bold text-xs md:text-sm rotate-[4deg] z-20 animate-float" style="animation-delay: 0.5s;">🔐 Cybersecurity</div>
+                <div class="absolute -bottom-4 left-1/4 px-4 py-2 bg-clay-mint clay-card text-clay-bg font-bold text-xs md:text-sm rotate-[-3deg] z-20 animate-float" style="animation-delay: 1s;">🌐 Web Dev</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section with Scroll Timeline -->
+    <section id="about" class="py-20 px-6 max-w-7xl mx-auto scroll-reveal">
+        <div class="bg-white/5 clay-card p-10 md:p-16 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-clay-accent/10 blur-3xl -mr-32 -mt-32"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start relative z-10">
+                <div class="flex flex-col gap-8">
+                    <h2 class="text-5xl font-heading font-bold">About Me</h2>
+                    <p class="text-xl text-clay-muted leading-relaxed">
+                        I am a passionate software enthusiast based in Pakistan, deeply driven by the logic of low-level programming and the dynamic challenges of security. I enjoy turning complex problems into intuitive designs.
+                    </p>
+                    <p class="text-lg text-clay-muted leading-relaxed italic border-l-4 border-clay-mint pl-6 py-2 bg-white/5 rounded-r-2xl">
+                        "I don't just write code; I design experiences that are soft to the eye but robust at the core."
+                    </p>
+                    <div class="flex items-center gap-4 mt-4">
+                        <div class="w-12 h-1 bg-clay-lavender clay-pill"></div>
+                        <span class="font-bold text-sm tracking-widest text-clay-lavender uppercase">My Philosophy</span>
+                    </div>
+                </div>
+                
+                <!-- Scroll Timeline -->
+                <div class="flex flex-col gap-10">
+                    <h3 class="text-2xl font-bold text-clay-lavender uppercase tracking-widest flex items-center gap-3">
+                        The Journey
+                        <div class="h-px flex-1 bg-white/10 ml-4"></div>
+                    </h3>
+
+                    <div class="timeline-container">
+                        <!-- 2024 -->
+                        <div class="timeline-item" id="item-2024">
+                            <div class="timeline-dot"></div>
+                            <span class="text-clay-accent font-black text-3xl font-heading absolute -left-20 top-0 hidden md:block opacity-30">2024</span>
+                            <div class="glass-clay p-6 rounded-3xl">
+                                <h4 class="text-xl font-bold text-clay-lavender mb-2">The Beginning</h4>
+                                <p class="text-clay-muted">Exploring computer hardware and the basics of C architecture. Focusing on hardware-software interfaces and efficient algorithms.</p>
+                                <div class="flex gap-3 mt-4">
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">Architecture</span>
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">C Logic</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 2025 -->
+                        <div class="timeline-item" id="item-2025">
+                            <div class="timeline-dot bg-clay-coral"></div>
+                            <span class="text-clay-coral font-black text-3xl font-heading absolute -left-20 top-0 hidden md:block opacity-30">2025</span>
+                            <div class="glass-clay p-6 rounded-3xl">
+                                <h4 class="text-xl font-bold text-clay-coral mb-2">Security Deep-Dive</h4>
+                                <p class="text-clay-muted">Diving deep into Linux, networking, and ethical hacking. Mastering tools like Metasploit, Nmap, and focusing on network hardening.</p>
+                                <div class="flex gap-3 mt-4">
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">Security</span>
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">Linux</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2026 -->
+                        <div class="timeline-item" id="item-2026">
+                            <div class="timeline-dot bg-clay-mint"></div>
+                            <span class="text-clay-mint font-black text-3xl font-heading absolute -left-20 top-0 hidden md:block opacity-30">2026</span>
+                            <div class="glass-clay p-6 rounded-3xl">
+                                <h4 class="text-xl font-bold text-clay-mint mb-2">Full Stack Mastery</h4>
+                                <p class="text-clay-muted">Bridging the gap between low-level logic and high-level web interfaces. Building secure, interactive full-stack applications.</p>
+                                <div class="flex gap-3 mt-4">
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">React</span>
+                                    <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-clay-muted border border-white/5">DevOps</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16 scroll-reveal">
+            <h2 class="text-5xl font-heading font-bold mb-4">Toolkit</h2>
+            <div class="w-32 h-3 bg-clay-yellow clay-pill mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="skillsGrid"></div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16 scroll-reveal">
+            <h2 class="text-5xl font-heading font-bold mb-4">Things I've Built</h2>
+            <div class="w-32 h-3 bg-clay-mint clay-pill mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12" id="projectsGrid"></div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="flex flex-col gap-6 scroll-reveal">
+                <h2 class="text-5xl font-heading font-bold">Let's Build Something</h2>
+                <p class="text-lg text-clay-muted leading-relaxed">
+                    I'm open to freelance work, collaborations, and just a good conversation about tech.
+                </p>
+                <div class="flex flex-col gap-4 mt-4">
+                    <a href="https://github.com/rehan789567" target="_blank" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 glass-clay clay-card flex items-center justify-center group-hover:bg-clay-lavender group-hover:text-clay-bg transition-all">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-clay-muted group-hover:text-clay-white transition-colors">github.com/rehan789567</span>
+                    </a>
+                    <a href="https://linkedin.com/in/muhammad-rehan-600640393/" target="_blank" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 glass-clay clay-card flex items-center justify-center group-hover:bg-clay-lavender group-hover:text-clay-bg transition-all">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-clay-muted group-hover:text-clay-white transition-colors">linkedin.com/in/muhammad-rehan</span>
+                    </a>
+                    <a href="mailto:muhammadrehan82008@gmail.com" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 glass-clay clay-card flex items-center justify-center group-hover:bg-clay-lavender group-hover:text-clay-bg transition-all">
+                            <i data-lucide="mail"></i>
+                        </div>
+                        <span class="font-medium text-clay-muted group-hover:text-clay-white transition-colors">muhammadrehan82008@gmail.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-clay-yellow clay-card p-8 md:p-10 text-clay-bg scroll-reveal" style="transition-delay: 200ms;">
+                <form action="https://formspree.io/f/xrerpgka" method="POST" id="contactForm" class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="font-bold text-sm ml-2">Name</label>
+                        <input type="text" name="name" required placeholder="Your Name" class="bg-white/60 rounded-2xl px-6 py-4 shadow-inner border-none focus:ring-4 focus:ring-clay-accent/30 outline-none transition-all placeholder:text-clay-bg/40">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-bold text-sm ml-2">Email</label>
+                        <input type="email" name="_replyto" required placeholder="your@email.com" class="bg-white/60 rounded-2xl px-6 py-4 shadow-inner border-none focus:ring-4 focus:ring-clay-accent/30 outline-none transition-all placeholder:text-clay-bg/40">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-bold text-sm ml-2">Message</label>
+                        <textarea name="message" required rows="4" placeholder="What's on your mind?" class="bg-white/60 rounded-2xl px-6 py-4 shadow-inner border-none focus:ring-4 focus:ring-clay-accent/30 outline-none transition-all placeholder:text-clay-bg/40 resize-none"></textarea>
+                    </div>
+                    <button type="submit" id="submitBtn" class="mt-4 py-4 bg-clay-coral clay-card font-bold text-lg flex items-center justify-center gap-2 transition-all">
+                        <span>Send Message</span>
+                        <i data-lucide="send"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Footer -->
+    <footer class="pt-20 pb-10 border-t border-white/5 px-6 mt-20 bg-clay-bg/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <!-- Brand & Tagline -->
+            <div class="flex flex-col gap-6">
+                <h2 class="text-4xl font-heading font-black tracking-tighter">REHAN<span class="text-clay-coral">.</span></h2>
+                <p class="text-clay-muted leading-relaxed">
+                    Crafting digital excellence through low-level precision and modern design thinking.
+                </p>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-clay-mint rounded-full animate-pulse"></div>
+                    <span class="text-sm font-bold text-clay-muted uppercase tracking-widest">Available for Hire</span>
+                </div>
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="flex flex-col gap-6">
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">Navigation</h3>
+                <ul class="flex flex-col gap-4">
+                    <li><a href="#about" class="text-clay-muted hover:text-clay-lavender transition-all hover:translate-x-1 inline-block">About Journey</a></li>
+                    <li><a href="#skills" class="text-clay-muted hover:text-clay-lavender transition-all hover:translate-x-1 inline-block">Toolkit & Skills</a></li>
+                    <li><a href="#projects" class="text-clay-muted hover:text-clay-lavender transition-all hover:translate-x-1 inline-block">Selected Projects</a></li>
+                    <li><a href="#contact" class="text-clay-muted hover:text-clay-lavender transition-all hover:translate-x-1 inline-block">Contact Me</a></li>
+                </ul>
+            </div>
+
+            <!-- Social Presence -->
+            <div class="flex flex-col gap-6">
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">Social Presence</h3>
+                <div class="flex flex-col gap-4">
+                    <a href="https://github.com/rehan789567" target="_blank" class="flex items-center gap-3 text-clay-muted hover:text-clay-lavender transition-all group">
+                        <div class="w-10 h-10 glass-clay clay-card flex items-center justify-center group-hover:scale-110">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium">GitHub Repository</span>
+                    </a>
+                    <a href="https://linkedin.com/in/muhammad-rehan-600640393/" target="_blank" class="flex items-center gap-3 text-clay-muted hover:text-clay-lavender transition-all group">
+                        <div class="w-10 h-10 glass-clay clay-card flex items-center justify-center group-hover:scale-110">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium">LinkedIn Profile</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Location/Direct -->
+            <div class="flex flex-col gap-6">
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">Quick Contact</h3>
+                <p class="text-clay-muted leading-relaxed">
+                    Based in Pakistan<br>
+                    Global Remote Collaboration
+                </p>
+                <a href="mailto:muhammadrehan82008@gmail.com" class="text-clay-lavender font-bold hover:underline">
+                    muhammadrehan82008@gmail.com
+                </a>
+            </div>
+        </div>
+
+        <!-- Copyright Line -->
+        <div class="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+            <p class="text-clay-muted text-sm font-medium italic">© 2024 Muhammad Rehan. All rights reserved.</p>
+            <div class="flex items-center gap-6">
+                <span class="text-clay-muted text-sm uppercase font-bold tracking-widest">Always Evolving</span>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="w-10 h-10 glass-clay clay-card flex items-center justify-center hover:bg-clay-accent transition-all animate-float">
+                    <i data-lucide="chevron-up" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@0.453.0"></script>
+    <script>
+        // Initialize Icons
+        function initIcons() {
+            lucide.createIcons();
+        }
+        
+        // Initial call
+        initIcons();
+        window.addEventListener('load', initIcons);
+
+        function throttle(func, limit) {
+            let lastRan;
+            let lastFunc;
+            return function() {
+                const context = this, args = arguments;
+                if (!lastRan) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function() {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            }
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navContainer = document.querySelector('nav > div');
+        let isMenuOpen = false;
+
+        mobileMenuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            const menuContent = navContainer.querySelector('.hidden.md\\:flex');
+            
+            if (isMenuOpen) {
+                navContainer.classList.add('flex-col', 'gap-4', '!items-start', 'bg-clay-bg/95', 'backdrop-blur-xl');
+                menuContent.classList.remove('hidden');
+                menuContent.classList.add('flex', 'flex-col', 'w-full', 'items-start', 'pt-4', 'pb-4', 'gap-6');
+                mobileMenuBtn.innerHTML = '<i data-lucide="x"></i>';
+            } else {
+                navContainer.classList.remove('flex-col', 'gap-4', '!items-start', 'bg-clay-bg/95', 'backdrop-blur-xl');
+                menuContent.classList.add('hidden');
+                menuContent.classList.remove('flex', 'flex-col', 'w-full', 'items-start', 'pt-4', 'pb-4', 'gap-6');
+                mobileMenuBtn.innerHTML = '<i data-lucide="menu"></i>';
+            }
+            lucide.createIcons();
+            initIcons();
+        });
+
+        initIcons();
+        const skillsData = [
+            { name: 'C Programming', level: '90%', icon: 'code', color: 'bg-clay-lavender', desc: 'Masters of logic, pointers, and performance optimizations.' },
+            { name: 'Cybersecurity', level: '85%', icon: 'shield', color: 'bg-clay-coral', desc: 'Focusing on network security, pentesting, and forensics.' },
+            { name: 'Web Dev', level: '80%', icon: 'globe', color: 'bg-clay-mint', desc: 'Fluid frontends with React, Tailwind, and Clay design.' },
+            { name: 'Linux', level: '88%', icon: 'terminal', color: 'bg-clay-yellow', desc: 'Bash scripting and server-side hardening.' },
+            { name: 'Data Logic', level: '82%', icon: 'cpu', color: 'bg-clay-blue', desc: 'Algorithms and efficient data structural design.' }
+        ];
+
+        const projectsData = [
+            { title: 'Portfolio Website', tags: ['HTML', 'CSS', 'JS', 'React', 'Tailwind'], github: 'https://github.com/rehan789567', color: 'bg-clay-lavender', image: 'portfolio', desc: 'My own corner of the internet. Claymorphism and personality.' },
+            { title: 'ATM Machine Interface', tags: ['HTML', 'CSS', 'JS', 'C', 'Logic'], github: 'https://github.com/rehan789567', color: 'bg-clay-coral', image: 'atm-machine', desc: 'C based logic with a modern interface.' },
+            { title: 'Neo Calculator', tags: ['HTML', 'CSS', 'JS', 'Glassmorphism'], github: 'https://github.com/rehan789567', color: 'bg-clay-yellow', image: 'calculator', desc: 'A glassmorphic calculator with advanced functions.' },
+            { title: 'Vault App', tags: ['HTML', 'CSS', 'JS', 'Encryption'], github: 'https://github.com/rehan789567', color: 'bg-clay-blue', image: 'vault', desc: 'A secure digital vault for sensitive information.' },
+            { title: 'Number Guessing Game', tags: ['HTML', 'CSS', 'JS', 'Gaming'], github: 'https://github.com/rehan789567', color: 'bg-clay-mint', image: 'game', desc: 'Interactive browser-based game with dynamic feedback.' },
+            { title: 'Projects Web', tags: ['HTML', 'CSS', 'JS', 'Hub'], github: 'https://rehan789567.github.io/projects-web/', color: 'bg-clay-lavender', image: 'web-hub', desc: 'Central hub where all projects are hosted.' }
+        ];
+
+        // Inject Skills
+        const skillsGrid = document.getElementById('skillsGrid');
+        skillsData.forEach((skill, i) => {
+            const div = document.createElement('div');
+            div.className = `clay-card bg-white/5 p-8 flex flex-col gap-6 group hover:translate-y-[-10px] scroll-reveal transition-delay-[${i * 100}ms] slide-reveal`;
+            div.innerHTML = `
+                <div class="w-16 h-16 ${skill.color} clay-card flex items-center justify-center text-clay-bg group-hover:scale-110 transition-transform">
+                    <div class="skill-icon-animate">
+                        <i data-lucide="${skill.icon}"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-2xl font-bold">${skill.name}</h3>
+                    <p class="text-clay-muted leading-relaxed">${skill.desc}</p>
+                </div>
+                <div class="w-full h-3 bg-white/10 clay-pill overflow-hidden">
+                    <div class="h-full ${skill.color} clay-pill transition-all duration-1000" style="width: ${skill.level}"></div>
+                </div>
+            `;
+            skillsGrid.appendChild(div);
+        });
+
+        // Inject Projects
+        const projectsGrid = document.getElementById('projectsGrid');
+        projectsData.forEach((proj, i) => {
+            const div = document.createElement('div');
+            div.className = `clay-card bg-white/5 overflow-hidden group scroll-reveal`;
+            div.style.transitionDelay = `${i * 150}ms`;
+            div.innerHTML = `
+                <div class="relative overflow-hidden aspect-video bg-clay-bg p-6">
+                    <div class="absolute inset-x-8 top-8 bottom-[-40px] bg-white group-hover:bg-clay-lavender transition-all duration-500 rounded-t-3xl shadow-xl overflow-hidden project-img-container shadow-clay">
+                        <img src="https://picsum.photos/seed/${proj.image}/800/500" alt="${proj.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90" loading="lazy">
+                    </div>
+                </div>
+                <div class="p-8 md:p-10 flex flex-col gap-6">
+                    <div class="flex flex-wrap gap-2">
+                        ${proj.tags.map(t => `<span class="px-4 py-1 text-xs font-bold uppercase rounded-full border border-white/10 bg-white/5 text-clay-lavender tracking-widest">${t}</span>`).join('')}
+                    </div>
+                    <h3 class="text-3xl font-heading font-bold">${proj.title}</h3>
+                    <p class="text-clay-muted text-lg leading-relaxed">${proj.desc}</p>
+                    <a href="${proj.github}" target="_blank" class="w-fit flex items-center gap-3 px-8 py-4 ${proj.color} clay-card text-clay-bg font-bold group-hover:scale-105 transition-all">
+                        <span>View Project</span>
+                        <i data-lucide="external-link" size="20"></i>
+                    </a>
+                </div>
+            `;
+            projectsGrid.appendChild(div);
+        });
+
+        initIcons();
+
+        // Custom Cursor
+        const dot = document.getElementById('cursorDot');
+        const blob = document.getElementById('cursorBlob');
+        let cursorX = 0, cursorY = 0, blobX = 0, blobY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX; cursorY = e.clientY;
+            dot.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+        });
+
+        function animateBlob() {
+            blobX += (cursorX - blobX) * 0.15;
+            blobY += (cursorY - blobY) * 0.15;
+            blob.style.transform = `translate3d(${blobX}px, ${blobY}px, 0)`;
+            requestAnimationFrame(animateBlob);
+        }
+        animateBlob();
+
+        document.querySelectorAll('a, button, .clay-card, .timeline-dot').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // Typewriter
+        const heroText = "C & Security";
+        const typewriter = document.getElementById('typewriter');
+        let typeIdx = 0;
+        function type() {
+            if (typeIdx < heroText.length) {
+                typewriter.innerHTML += heroText.charAt(typeIdx);
+                typeIdx++;
+                setTimeout(type, 150);
+            }
+        }
+        type();
+
+        // Scroll Reveal & Timeline Reveal
+        const observerOptions = { threshold: 0.2 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal-active');
+                    if (entry.target.classList.contains('timeline-item')) {
+                        entry.target.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal, .timeline-item').forEach(el => observer.observe(el));
+
+        // Form Submission
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitBtn.innerHTML = '<span>Sending...</span>';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    submitBtn.classList.replace('bg-clay-coral', 'bg-clay-mint');
+                    submitBtn.innerHTML = '<span>Sent! ✓</span>';
+                    form.reset();
+                    setTimeout(() => {
+                        submitBtn.classList.replace('bg-clay-mint', 'bg-clay-coral');
+                        submitBtn.innerHTML = '<span>Send Message</span> <i data-lucide="send"></i>';
+                        submitBtn.disabled = false;
+                        lucide.createIcons();
+                        initIcons();
+                    }, 5000);
+                }
+            } catch (err) {
+                submitBtn.innerHTML = '<span>Error!</span>';
+                setTimeout(() => {
+                    submitBtn.innerHTML = '<span>Send Message</span>';
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
