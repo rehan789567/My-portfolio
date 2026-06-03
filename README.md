@@ -1,4 +1,5 @@
 <div align="center">
+<<<<<<< HEAD
 
 # 🧑‍💻 Muhammad Rehan — Personal Portfolio
 
@@ -359,3 +360,35 @@ Find the `#about` section in the HTML and update the `.timeline-item` blocks:
 *© 2024 Muhammad Rehan. All rights reserved.*
 
 </div>
+=======
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/c6eb833d-90ba-4c54-b6bc-e3838ba573b7
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
+
+## Deploy to GitHub Pages
+
+1. Create a GitHub repository and push this project to it.
+2. Install dependencies if needed:
+   `npm install`
+3. Deploy with:
+   `npm run deploy`
+
+After deployment, open your GitHub Pages site URL: `https://<username>.github.io/<repo>/`.
+If your repository is named `username.github.io`, the site is available at `https://<username>.github.io/`.
+>>>>>>> 252b80b (Initial commit)
